@@ -4,42 +4,34 @@ import axios from "axios";
 import AuthorItems from "../author/AuthorItems";
 
 const HotCollections = () => {
-  
-  function getUsers() {
-    const [users, setUsers] = useState([])
 
-    async function fetchUsers() {
+  const [collections, setCollections] = useState([])
+
+    async function fetchCollections() {
             const { data } = await axios.get("https://us-central1-nft-cloud-functions.cloudfunctions.net/hotCollections")
-            setUsers(data)
+            setCollections(data)
         }
     useEffect(() => {
         setTimeout(() => {
-            fetchUsers()
+            fetchCollections()
         }, 500)
     }, [])
 
-    function renderUsers() {
-        return users.map((user) => (
-            <Link to = {`/users/${user.id}`} key = { user.id }>
+    function renderCollections() {
+        return collections.map((collections) => (
+            <Link to = {`/hotCollections/${collections.id}`} key = { collections.id }>
                 <AuthorItems
-                id = { user.id }
-                title = { user.title }
-                authorImage = { user.authorImage }
-                nftImage = { user.nftImage }
-                authorId = { user.authorId }
-                code = { user.code }
+                id = { collections.id }
+                title = { collections.title }
+                authorImage = { collections.authorImage }
+                nftImage = { collections.nftImage }
                 />
             </Link>
         ))
     }
+    
     return (
-        <div>
-            { users.length ? renderUsers() : <h1>Loading...</h1> }
-        </div>
-    )
-}
 
-  return (
     <section id="section-collections" className="no-bottom">
       <div className="container">
         <div className="row">
@@ -49,25 +41,25 @@ const HotCollections = () => {
               <div className="small-border bg-color-2"></div>
             </div>
           </div>
-          {new Array(4).fill(0).map((_, index) => (
+          {new Array(4).map((collections, index) => (
             <div className="col-lg-3 col-md-6 col-sm-6 col-xs-12" key={index}>
               <div className="nft_coll">
                 <div className="nft_wrap">
                   <Link to="/item-details">
-                    <img src={nftImage} className="lazy img-fluid" alt="" />
+                    <img src={collections.nftImage} className="lazy img-fluid" alt="" />
                   </Link>
                 </div>
                 <div className="nft_coll_pp">
                   <Link to="/author">
-                    <img className="lazy pp-coll" src={authorImage} alt="" />
+                    <img className="lazy pp-coll" src={collections.authorImage} alt="" />
                   </Link>
                   <i className="fa fa-check"></i>
                 </div>
                 <div className="nft_coll_info">
                   <Link to="/explore">
-                    <h4>Pinky Ocean</h4>
+                    <h4>{collections.title}</h4>
                   </Link>
-                  <span>ERC-192</span>
+                  <span>{collections.code}</span>
                 </div>
               </div>
             </div>
@@ -77,5 +69,6 @@ const HotCollections = () => {
     </section>
   );
 };
+
 
 export default HotCollections;
