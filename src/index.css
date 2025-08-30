@@ -10,14 +10,14 @@
 @import "./css/styles/style.css";
 @import "./css/colors/scheme-01.css";
 @import "./css/styles/coloring.css";
-.owl-carousel .item {
-    padding: 10px;
-    width: 100%;
-}
 
 .nft_coll {
-    max-width: 100%;
-    box-sizing: border-box;
+    max-width: 300px;
+    margin: 0 auto;
+}
+
+.owl_carousel item {
+    padding: 10px;
 }
 
 .skeleton-box {
