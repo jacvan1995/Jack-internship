@@ -37,7 +37,7 @@ const NewItems = () => {
     async function fetchCollections() {
     try {
       const { data } = await axios.get(
-        "https://us-central1-nft-cloud-functions.cloudfunctions.net/hotCollections"
+        "https://us-central1-nft-cloud-functions.cloudfunctions.net/newItems"
       );
       setCollections(data);
       setLoading(false);
@@ -70,7 +70,7 @@ const NewItems = () => {
                   <SkeletonCard/>
                 </div>  
               ))
-            : collections.map ((collection, id) => (
+            : collections.map((collection, id) => (
                 <div className="item" key={id}>
                 <div className="nft__item">
                 <div className="author_list_pp">
@@ -115,9 +115,9 @@ const NewItems = () => {
                 </div>
                 <div className="nft__item_info">
                   <Link to="/item-details">
-                    <h4>Pinky Ocean</h4>
+                    <h4>{collection.title}</h4>
                   </Link>
-                  <div className="nft__item_price">3.08 ETH</div>
+                  <div className="nft__item_price">{collection.price}</div>
                   <div className="nft__item_like">
                     <i className="fa fa-heart"></i>
                     <span>69</span>

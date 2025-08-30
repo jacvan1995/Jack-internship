@@ -61,7 +61,8 @@ const HotCollections = () => {
   }
   useEffect(() => {
     fetchCollections();
-  }, []);
+    console.log("Collections:", collections)
+  }, [collections]);
   return (
     <section id="section-collections" className="no-bottom">
       <div className="container">
@@ -108,7 +109,7 @@ const HotCollections = () => {
                       <Link to="/explore">
                         <h4>{collection.title}</h4>
                       </Link>
-                      <span>{collection.code}</span>
+                      <span>{collection.price}</span>
                     </div>
                   </div>
                 </div>
