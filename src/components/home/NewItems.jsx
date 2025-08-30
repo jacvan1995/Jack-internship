@@ -1,9 +1,56 @@
-import React from "react";
+import OwlCarousel from "react-owl-carousel";
+import "owl.carousel/dist/assets/owl.carousel.css";
+import "owl.carousel/dist/assets/owl.theme.default.css";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import AuthorImage from "../../images/author_thumbnail.jpg";
-import nftImage from "../../images/nftImage.jpg";
+import axios from "axios";
 
 const NewItems = () => {
+  const options = {
+    loop: true,
+    margin: 10,
+    nav: true,
+    responsive: {
+      0: { items: 1 },
+      600: { items: 2 },
+      1000: { items: 4 },
+    },
+  };
+
+  const [collections, setCollections] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const SkeletonCard = () => (
+        <div className="nft__coll--skeleton">
+          <div className="nft_wrap">
+            <div className="skeleton__box--image" />
+          </div>
+          <div className="nft_coll_pp">
+            <div className="skeleton__box--avatar" />
+          </div>
+          <div className="nft_coll_info">
+            <div className="skeleton__box--title" />
+            <div className="skeleton__box--subtitle" />
+          </div>
+        </div>
+    );
+
+    async function fetchCollections() {
+    try {
+      const { data } = await axios.get(
+        "https://us-central1-nft-cloud-functions.cloudfunctions.net/hotCollections"
+      );
+      setCollections(data);
+      setLoading(false);
+    } catch (error) {
+      console.error("Failed to fetch collections:", error);
+      setLoading(false);
+    }
+  }
+
+  useEffect(() => {
+    fetchCollections();
+  }, []);
+
   return (
     <section id="section-items" className="no-bottom">
       <div className="container">
@@ -14,9 +61,18 @@ const NewItems = () => {
               <div className="small-border bg-color-2"></div>
             </div>
           </div>
-          {new Array(4).fill(0).map((_, index) => (
-            <div className="col-lg-3 col-md-6 col-sm-6 col-xs-12" key={index}>
-              <div className="nft__item">
+          <OwlCarousel className="owl-theme" {...options}>
+            {loading
+            ? Array(4)
+              .fill()
+              .map((_, i) => (
+                <div className="item" key={i}>
+                  <SkeletonCard/>
+                </div>  
+              ))
+            : collections.map ((collection, id) => (
+                <div className="item" key={id}>
+                <div className="nft__item">
                 <div className="author_list_pp">
                   <Link
                     to="/author"
@@ -24,7 +80,7 @@ const NewItems = () => {
                     data-bs-placement="top"
                     title="Creator: Monica Lucas"
                   >
-                    <img className="lazy" src={AuthorImage} alt="" />
+                    <img className="lazy" src={collection.authorImage} alt="" />
                     <i className="fa fa-check"></i>
                   </Link>
                 </div>
@@ -51,7 +107,7 @@ const NewItems = () => {
 
                   <Link to="/item-details">
                     <img
-                      src={nftImage}
+                      src={collection.nftImage}
                       className="lazy nft__item_preview"
                       alt=""
                     />
@@ -70,10 +126,12 @@ const NewItems = () => {
               </div>
             </div>
           ))}
+        </OwlCarousel>
         </div>
       </div>
     </section>
   );
 };
+
 
 export default NewItems;

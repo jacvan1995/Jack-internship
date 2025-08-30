@@ -33,7 +33,6 @@ const HotCollections = () => {
   const [collections, setCollections] = useState([]);
   const [loading, setLoading] = useState(true);
   const SkeletonCard = () => (
-    <div className="keen-slider__slide">
       <div className="nft__coll--skeleton">
         <div className="nft_wrap">
           <div className="skeleton__box--image" />
@@ -46,7 +45,6 @@ const HotCollections = () => {
           <div className="skeleton__box--subtitle" />
         </div>
       </div>
-    </div>
   );
 
   async function fetchCollections() {
@@ -62,9 +60,7 @@ const HotCollections = () => {
     }
   }
   useEffect(() => {
-    const timeout = setTimeout(() => setLoading(false), 5000);
     fetchCollections();
-    return () => clearTimeout(timeout);
   }, []);
   return (
     <section id="section-collections" className="no-bottom">
