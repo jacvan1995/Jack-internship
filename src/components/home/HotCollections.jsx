@@ -61,8 +61,7 @@ const HotCollections = () => {
   }
   useEffect(() => {
     fetchCollections();
-    console.log("Collections:", collections)
-  }, [collections]);
+  }, []);
   return (
     <section id="section-collections" className="no-bottom">
       <div className="container">
@@ -75,7 +74,7 @@ const HotCollections = () => {
           </div>
         </div>
         <OwlCarousel className="owl-theme" {...options}>
-          {loading
+          {collections.length === 0
             ? Array(4)
                 .fill()
                 .map((_, i) => (
