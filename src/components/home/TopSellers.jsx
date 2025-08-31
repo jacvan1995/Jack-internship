@@ -47,18 +47,18 @@ const TopSellers = () => {
           </div>
           <div className="col-md-12">
             <ol className="author_list">
-              {collections.length === 0
+              {loading
                 ? Array(12)
                     .fill()
                     .map((_, id) => (
-                      <li key={id}>
+                      <div key={id}>
                         <SkeletonCard />
-                      </li>
+                      </div>
                     ))
                 : collections.map((collection, id) => (
                     <li key={id}>
                       <div className="author_list_pp">
-                        <Link to="/author">
+                        <Link to={`/author/${collection.authorId}`}>
                           <img
                             className="lazy pp-author"
                             src={collection.authorImage}
@@ -68,7 +68,7 @@ const TopSellers = () => {
                         </Link>
                       </div>
                       <div className="author_list_info">
-                        <Link to="/author">{collection.authorName}</Link>
+                        <Link to={`/author/${collection.authorId}`}>{collection.authorName}</Link>
                         <span>{collection.price} ETH</span>
                       </div>
                     </li>

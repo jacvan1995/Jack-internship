@@ -33,34 +33,49 @@ const HotCollections = () => {
   const [collections, setCollections] = useState([]);
   const [loading, setLoading] = useState(true);
   const SkeletonCard = () => (
-      <div className="nft__coll--skeleton">
-        <div className="nft_wrap">
-          <div className="skeleton__box--image" />
-        </div>
-        <div className="nft_coll_pp">
-          <div className="skeleton__box--avatar" />
-        </div>
-        <div className="nft_coll_info">
-          <div className="skeleton__box--title" />
-          <div className="skeleton__box--subtitle" />
-        </div>
+    <div className="nft__coll--skeleton">
+      <div className="nft_wrap">
+        <div className="skeleton__box--image" />
       </div>
+      <div className="nft_coll_pp">
+        <div className="skeleton__box--avatar" />
+      </div>
+      <div className="nft_coll_info">
+        <div className="skeleton__box--title" />
+        <div className="skeleton__box--subtitle" />
+      </div>
+    </div>
   );
 
-  async function fetchCollections() {
-    try {
-      const { data } = await axios.get(
-        "https://us-central1-nft-cloud-functions.cloudfunctions.net/hotCollections"
-      );
-      setCollections(data);
-      setLoading(false);
-    } catch (error) {
-      console.error("Failed to fetch collections:", error);
-      setLoading(false);
-    }
-  }
   useEffect(() => {
+    let didFinish = false;
+
+    async function fetchCollections() {
+      console.log("Fetching collections...");
+      try {
+        const { data } = await axios.get(
+          "https://us-central1-nft-cloud-functions.cloudfunctions.net/hotCollections"
+        );
+        setCollections(data ?? []);
+        setLoading(false);
+        didFinish = true;
+      } catch (error) {
+        console.error("Fetch failed:", error);
+        setLoading(false);
+        didFinish = true;
+      }
+    }
+
     fetchCollections();
+
+    const timeout = setTimeout(() => {
+      if (!didFinish) {
+        console.warn("Fetch timeout fallback triggered");
+        setLoading(false);
+      }
+    }, 5000);
+
+    return () => clearTimeout(timeout);
   }, []);
   return (
     <section id="section-collections" className="no-bottom">
@@ -73,47 +88,49 @@ const HotCollections = () => {
             </div>
           </div>
         </div>
-        <OwlCarousel className="owl-theme" {...options}>
-          {collections.length === 0
-            ? Array(4)
-                .fill()
-                .map((_, i) => (
-                  <div className="item" key={i}>
-                    <SkeletonCard />
+        {loading ? (
+          Array(4)
+            .fill()
+            .map((_, i) => (
+              <div className="item" key={i}>
+                <SkeletonCard />
+              </div>
+            ))
+        ) : (
+          <OwlCarousel className="owl-theme" {...options}>
+            {collections.map((collection, id) => (
+              <div className="item" key={id}>
+                <div className="nft_coll">
+                  <div className="nft_wrap">
+                    <Link to="/item-details">
+                      <img
+                        src={collection.nftImage}
+                        className="lazy img-fluid"
+                        alt=""
+                      />
+                    </Link>
                   </div>
-                ))
-            : collections.map((collection, id) => (
-                <div className="item" key={id}>
-                  <div className="nft_coll">
-                    <div className="nft_wrap">
-                      <Link to="/item-details">
-                        <img
-                          src={collection.nftImage}
-                          className="lazy img-fluid"
-                          alt=""
-                        />
-                      </Link>
-                    </div>
-                    <div className="nft_coll_pp">
-                      <Link to="/author">
-                        <img
-                          className="lazy pp-coll"
-                          src={collection.authorImage}
-                          alt=""
-                        />
-                      </Link>
-                      <i className="fa fa-check"></i>
-                    </div>
-                    <div className="nft_coll_info">
-                      <Link to="/explore">
-                        <h4>{collection.title}</h4>
-                      </Link>
-                      <span>{collection.price}</span>
-                    </div>
+                  <div className="nft_coll_pp">
+                    <Link to="/author">
+                      <img
+                        className="lazy pp-coll"
+                        src={collection.authorImage}
+                        alt=""
+                      />
+                    </Link>
+                    <i className="fa fa-check"></i>
+                  </div>
+                  <div className="nft_coll_info">
+                    <Link to="/explore">
+                      <h4>{collection.title}</h4>
+                    </Link>
+                    <span>{collection.price}</span>
                   </div>
                 </div>
-              ))}
-        </OwlCarousel>
+              </div>
+            ))}
+          </OwlCarousel>
+        )}
       </div>
     </section>
   );
