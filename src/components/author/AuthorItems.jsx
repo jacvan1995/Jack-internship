@@ -1,19 +1,78 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import AuthorImage from "../../images/author_thumbnail.jpg";
 import nftImage from "../../images/nftImage.jpg";
+import axios from "axios";
+
+
 
 const AuthorItems = () => {
+  const [collections, setCollections] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  async function fetchCollections() {
+    try {
+      const { data } = await axios.get(
+        "https://us-central1-nft-cloud-functions.cloudfunctions.net/authors?author=73855012"
+      );
+      setCollections(data);
+      setLoading(false);
+    } catch (error) {
+      console.error("Failed to fetch collections:", error);
+      setLoading(false);
+    }
+  }
+  useEffect(() => {
+    fetchCollections();
+  }, []);
+
+  const SkeletonCard = () => (
+    <div
+      className="d-item col-lg-3 col-md-6 col-sm-6 col-xs-12"
+      style={{ display: "block", backgroundSize: "cover" }}
+    >
+      <div className="nft__item skeleton">
+        <div className="author_list_pp">
+          <div className="skeleton-circle pp-author" />
+          <i className="fa fa-check skeleton-icon"></i>
+        </div>
+
+        <div className="skeleton-countdown" />
+
+        <div className="nft__item_wrap">
+          <div className="skeleton-box nft__item_preview" />
+        </div>
+
+        <div className="nft__item_info">
+          <div className="skeleton-text skeleton-title" />
+          <div className="skeleton-text skeleton-price" />
+          <div className="nft__item_like">
+            <i className="fa fa-heart skeleton-heart" />
+            <div className="skeleton-text skeleton-likes" />
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+
   return (
     <div className="de_tab_content">
       <div className="tab-1">
         <div className="row">
-          {new Array(8).fill().map((_, index) => (
-            <div className="col-lg-3 col-md-6 col-sm-6 col-xs-12" key={index}>
+          {loading
+                ? Array(8)
+                    .fill()
+                    .map((_, id) => (
+                      <div key={id}>
+                        <SkeletonCard />
+                      </div>
+                    ))
+          : collections.map((collection, id) => (
+            <div className="col-lg-3 col-md-6 col-sm-6 col-xs-12" key={id}>
               <div className="nft__item">
                 <div className="author_list_pp">
                   <Link to="">
-                    <img className="lazy" src={AuthorImage} alt="" />
+                    <img className="lazy" src={collection.authorImage} alt="" />
                     <i className="fa fa-check"></i>
                   </Link>
                 </div>
@@ -37,7 +96,7 @@ const AuthorItems = () => {
                   </div>
                   <Link to="/item-details">
                     <img
-                      src={nftImage}
+                      src={collection.nftImage}
                       className="lazy nft__item_preview"
                       alt=""
                     />
@@ -45,12 +104,12 @@ const AuthorItems = () => {
                 </div>
                 <div className="nft__item_info">
                   <Link to="/item-details">
-                    <h4>Pinky Ocean</h4>
+                    <h4>{collection.title}</h4>
                   </Link>
-                  <div className="nft__item_price">2.52 ETH</div>
+                  <div className="nft__item_price">{collection.price} ETH</div>
                   <div className="nft__item_like">
                     <i className="fa fa-heart"></i>
-                    <span>97</span>
+                    <span>{collection.likes}</span>
                   </div>
                 </div>
               </div>

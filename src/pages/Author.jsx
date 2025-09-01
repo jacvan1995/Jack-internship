@@ -1,10 +1,51 @@
-import React from "react";
-import AuthorBanner from "../images/author_banner.jpg";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 import AuthorItems from "../components/author/AuthorItems";
 import { Link } from "react-router-dom";
-import AuthorImage from "../images/author_thumbnail.jpg";
 
 const Author = () => {
+  const authors = [
+  { name: "Monica Lucas", id: "83937449" },
+  { name: "Lori Hart", id: "73855012" },
+  { name: "Gayle Hicks", id: "49986179" },
+  { name: "Stacy Long", id: "90432259" },
+  { name: "Mamie Barnett", id: "40460691" },
+  { name: "Jimmy Wright", id: "87818782" },
+  { name: "Claude Banks", id: "52045866" },
+  { name: "Ida Chapman", id: "39623982" },
+  { name: "Fred Ryan", id: "18556210" },
+  { name: "Nicholas Daniels", id: "55757699" },
+  { name: "Karla Sharp", id: "31906377" },
+  { name: "Frankiln Greer", id: "72378156" }
+];
+
+  const [collections, setCollections] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  async function fetchCollections() {
+    try {
+      const { data } = await axios.get(
+        `https://us-central1-nft-cloud-functions.cloudfunctions.net/authors?author=${id}`
+      );
+      setCollections(data);
+      setLoading(false);
+    } catch (error) {
+      console.error("Failed to fetch collections:", error);
+      setLoading(false);
+    }
+  }
+  useEffect(() => {
+    fetchCollections();
+  }, []);
+
+
+
+  const SkeletonCard = () => (
+    <div>
+      
+    </div>
+  );
+  
   return (
     <div id="wrapper">
       <div className="no-bottom no-top" id="content">
@@ -15,7 +56,7 @@ const Author = () => {
           aria-label="section"
           className="text-light"
           data-bgimage="url(images/author_banner.jpg) top"
-          style={{ background: `url(${AuthorBanner}) top` }}
+          style={{ background: `url(${collection.authorBanner}) top` }}
         ></section>
 
         <section aria-label="section">
@@ -25,7 +66,7 @@ const Author = () => {
                 <div className="d_profile de-flex">
                   <div className="de-flex-col">
                     <div className="profile_avatar">
-                      <img src={AuthorImage} alt="" />
+                      <img src={collection.authorImage} alt="" />
 
                       <i className="fa fa-check"></i>
                       <div className="profile_name">

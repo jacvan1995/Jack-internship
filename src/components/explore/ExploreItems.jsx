@@ -26,18 +26,44 @@ const ExploreItems = () => {
   }, []);
 
   const SkeletonCard = () => (
-    <li>
-      <div className="author_list_pp">
-        <div className="skeleton-circle pp-author" />
-        <i className="fa fa-check skeleton-icon"></i>
+    <div
+      className="d-item col-lg-3 col-md-6 col-sm-6 col-xs-12"
+      style={{ display: "block", backgroundSize: "cover" }}
+    >
+      <div className="nft__item skeleton">
+        <div className="author_list_pp">
+          <div className="skeleton-circle pp-author" />
+          <i className="fa fa-check skeleton-icon"></i>
+        </div>
+
+        <div className="skeleton-countdown" />
+
+        <div className="nft__item_wrap">
+          <div className="skeleton-box nft__item_preview" />
+        </div>
+
+        <div className="nft__item_info">
+          <div className="skeleton-text skeleton-title" />
+          <div className="skeleton-text skeleton-price" />
+          <div className="nft__item_like">
+            <i className="fa fa-heart skeleton-heart" />
+            <div className="skeleton-text skeleton-likes" />
+          </div>
+        </div>
       </div>
-      <div className="author_list_info">
-        <div className="skeleton-text skeleton-name" />
-        <div className="skeleton-text skeleton-eth" />
-      </div>
-    </li>
+    </div>
   );
+
   const sortedCollections = [...collections];
+
+if (sortOption === "price_low_to_high") {
+  sortedCollections.sort((a, b) => parseFloat(a.price) - parseFloat(b.price));
+} else if (sortOption === "price_high_to_low") {
+  sortedCollections.sort((a, b) => parseFloat(b.price) - parseFloat(a.price));
+} else if (sortOption === "likes_high_to_low") {
+  sortedCollections.sort((a, b) => b.likes - a.likes);
+}
+
   const visibleItems = sortedCollections.slice(0, visibleCount);
 
   const handleLoadMore = () => {
@@ -102,20 +128,12 @@ const ExploreItems = () => {
       </div>
     ));
 
-  if (sortOption === "price_low_to_high") {
-    sortedCollections.sort((a, b) => parseFloat(a.price) - parseFloat(b.price));
-  } else if (sortOption === "price_high_to_low") {
-    sortedCollections.sort((a, b) => parseFloat(b.price) - parseFloat(a.price));
-  } else if (sortOption === "likes_high_to_low") {
-    sortedCollections.sort((a, b) => b.likes - a.likes);
-  }
-
   return (
     <>
       <div>
         <select
           id="filter-items"
-          defaultValue={sortOption}
+          value={sortOption}
           onChange={(e) => setSortOption(e.target.value)}
         >
           <option value="">Default</option>
