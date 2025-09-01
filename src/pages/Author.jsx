@@ -1,51 +1,41 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import AuthorItems from "../components/author/AuthorItems";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
+import AuthorBanner from "../images/author_banner.jpg"
+import AuthorImage from "../images/author_thumbnail.jpg"
 
 const Author = () => {
-  const authors = [
-  { name: "Monica Lucas", id: "83937449" },
-  { name: "Lori Hart", id: "73855012" },
-  { name: "Gayle Hicks", id: "49986179" },
-  { name: "Stacy Long", id: "90432259" },
-  { name: "Mamie Barnett", id: "40460691" },
-  { name: "Jimmy Wright", id: "87818782" },
-  { name: "Claude Banks", id: "52045866" },
-  { name: "Ida Chapman", id: "39623982" },
-  { name: "Fred Ryan", id: "18556210" },
-  { name: "Nicholas Daniels", id: "55757699" },
-  { name: "Karla Sharp", id: "31906377" },
-  { name: "Frankiln Greer", id: "72378156" }
-];
 
-  const [collections, setCollections] = useState([]);
+  const [collection, setCollection] = useState([]);
   const [loading, setLoading] = useState(true);
+  const { id } = useParams()
 
-  async function fetchCollections() {
+  async function fetchCollection() {
     try {
       const { data } = await axios.get(
         `https://us-central1-nft-cloud-functions.cloudfunctions.net/authors?author=${id}`
       );
-      setCollections(data);
+      setCollection(data);
       setLoading(false);
+      console.log("Fetched collections:", data);
+      console.log(loading);
     } catch (error) {
       console.error("Failed to fetch collections:", error);
       setLoading(false);
     }
   }
-  useEffect(() => {
-    fetchCollections();
-  }, []);
 
+  useEffect (() => {
+    fetchCollection()
+  }, [id])
 
+  const SkeletonCard = () => <div></div>;
 
-  const SkeletonCard = () => (
-    <div>
-      
-    </div>
-  );
-  
+  if (loading || !collection) {
+    return <SkeletonCard />;
+  }
+
   return (
     <div id="wrapper">
       <div className="no-bottom no-top" id="content">
@@ -56,7 +46,7 @@ const Author = () => {
           aria-label="section"
           className="text-light"
           data-bgimage="url(images/author_banner.jpg) top"
-          style={{ background: `url(${collection.authorBanner}) top` }}
+          style={{ background: `url(${AuthorBanner}) top` }}
         ></section>
 
         <section aria-label="section">
@@ -71,10 +61,10 @@ const Author = () => {
                       <i className="fa fa-check"></i>
                       <div className="profile_name">
                         <h4>
-                          Monica Lucas
-                          <span className="profile_username">@monicaaaa</span>
+                          {collection.authorName}
+                          <span className="profile_username">{collection.userName}</span>
                           <span id="wallet" className="profile_wallet">
-                            UDHUHWudhwd78wdt7edb32uidbwyuidhg7wUHIFUHWewiqdj87dy7
+                            {collection.address}
                           </span>
                           <button id="btn_copy" title="Copy Text">
                             Copy
@@ -85,7 +75,7 @@ const Author = () => {
                   </div>
                   <div className="profile_follow de-flex">
                     <div className="de-flex-col">
-                      <div className="profile_follower">573 followers</div>
+                      <div className="profile_follower">{collection.followers} Followers</div>
                       <Link to="#" className="btn-main">
                         Follow
                       </Link>

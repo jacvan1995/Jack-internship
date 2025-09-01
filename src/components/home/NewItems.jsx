@@ -87,7 +87,7 @@ const NewItems = () => {
                   <div className="nft__item">
                     <div className="author_list_pp">
                       <Link
-                        to="/author"
+                        to={`/author/${collection.authorId}`}
                         data-bs-toggle="tooltip"
                         data-bs-placement="top"
                         title="Creator: Monica Lucas"
@@ -122,7 +122,7 @@ const NewItems = () => {
                         </div>
                       </div>
 
-                      <Link to="/item-details">
+                      <Link to={`/item-details/${collection.authorId}`}>
                         <img
                           src={collection.nftImage}
                           className="lazy nft__item_preview"
@@ -131,7 +131,7 @@ const NewItems = () => {
                       </Link>
                     </div>
                     <div className="nft__item_info">
-                      <Link to="/item-details">
+                      <Link to={`/item-details/${collection.authorId}`}>
                         <h4>{collection.title}</h4>
                       </Link>
                       <div className="nft__item_price">{collection.price}</div>

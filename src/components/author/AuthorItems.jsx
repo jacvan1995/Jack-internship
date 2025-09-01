@@ -1,7 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import AuthorImage from "../../images/author_thumbnail.jpg";
-import nftImage from "../../images/nftImage.jpg";
 import axios from "axios";
 
 
@@ -13,7 +11,7 @@ const AuthorItems = () => {
   async function fetchCollections() {
     try {
       const { data } = await axios.get(
-        "https://us-central1-nft-cloud-functions.cloudfunctions.net/authors?author=73855012"
+        "https://us-central1-nft-cloud-functions.cloudfunctions.net/"
       );
       setCollections(data);
       setLoading(false);
