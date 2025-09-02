@@ -16,6 +16,11 @@
     margin: 0 auto;
 }
 
+.lazy {
+  height: 50px;
+  width: 50px;
+}
+
 .owl_carousel item {
     padding: 10px;
 }
