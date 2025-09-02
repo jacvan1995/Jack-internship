@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import AuthorItems from "../components/author/AuthorItems";
-import { Link, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import AuthorBanner from "../images/author_banner.jpg";
 
 const Author = () => {
@@ -61,10 +61,6 @@ const Author = () => {
           setItems(Array.isArray(data.nftCollection) ? data.nftCollection : []);
           setLoading(false);
         }
-        console.log("Nft items:", data.nftCollection);
-        console.log("Fetched data:", data);
-        console.log("Author items loading:", loading);
-        console.log("Author items:", items);
       } catch (error) {
         console.error("Failed to fetch author:", error);
         if (isMounted) setItems([]);

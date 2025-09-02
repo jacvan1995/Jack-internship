@@ -1,13 +1,48 @@
-import React, { useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import EthImage from "../images/ethereum.svg";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import AuthorImage from "../images/author_thumbnail.jpg";
 import nftImage from "../images/nftImage.jpg";
+import axios from "axios";
+/*
+"id"
+"title"
+"tag"
+"description"
+"nftImage"
+"nftId"
+"ownerName"
+"ownerId"
+"ownerImage"
+"creatorName"
+"creatorId"
+"creatorImage"
+*/
 
 const ItemDetails = () => {
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
+
+    const { id } = useParams();
+  const [loading, setLoading] = useState(true);
+  const [item, setItem] = useState(null)
+
+  async function fetchItem() {
+    try {
+      const { data } = await axios.get(
+        `https://us-central1-nft-cloud-functions.cloudfunctions.net/itemDetails?nftId=${id}`
+      );
+      setItem(data);
+      setLoading(false);
+    } catch (error) {
+      console.error("Failed to fetch collections:", error);
+      setLoading(false);
+    }
+  }
+  useEffect(() => {
+    fetchItem();
+  }, [id]);
 
   return (
     <div id="wrapper">
@@ -25,22 +60,20 @@ const ItemDetails = () => {
               </div>
               <div className="col-md-6">
                 <div className="item_info">
-                  <h2>Rainbow Style #194</h2>
+                  <h2>item.title #item.tag</h2>
 
                   <div className="item_info_counts">
                     <div className="item_info_views">
                       <i className="fa fa-eye"></i>
-                      100
+                      item.views
                     </div>
                     <div className="item_info_like">
                       <i className="fa fa-heart"></i>
-                      74
+                      item.likes
                     </div>
                   </div>
                   <p>
-                    doloremque laudantium, totam rem aperiam, eaque ipsa quae ab
-                    illo inventore veritatis et quasi architecto beatae vitae
-                    dicta sunt explicabo.
+                    item.description
                   </p>
                   <div className="d-flex flex-row">
                     <div className="mr40">
@@ -53,7 +86,7 @@ const ItemDetails = () => {
                           </Link>
                         </div>
                         <div className="author_list_info">
-                          <Link to="/author">Monica Lucas</Link>
+                          <Link to="/author">item.ownerName</Link>
                         </div>
                       </div>
                     </div>
@@ -70,7 +103,7 @@ const ItemDetails = () => {
                           </Link>
                         </div>
                         <div className="author_list_info">
-                          <Link to="/author">Monica Lucas</Link>
+                          <Link to="/author">item.creatorName</Link>
                         </div>
                       </div>
                     </div>
@@ -78,7 +111,7 @@ const ItemDetails = () => {
                     <h6>Price</h6>
                     <div className="nft-item-price">
                       <img src={EthImage} alt="" />
-                      <span>1.85</span>
+                      <span>item.price</span>
                     </div>
                   </div>
                 </div>
