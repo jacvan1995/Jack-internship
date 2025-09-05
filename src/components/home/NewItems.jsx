@@ -17,6 +17,9 @@ const NewItems = () => {
       1000: { items: 4 },
     },
   };
+  const [collections, setCollections] = useState([]);
+  const [loading, setLoading] = useState(true);
+
   async function fetchCollections() {
     try {
       const { data } = await axios.get(
@@ -34,9 +37,7 @@ const NewItems = () => {
   useEffect(() => {
     fetchCollections();
   }, []);
-  const [collections, setCollections] = useState([]);
-  const [loading, setLoading] = useState(true);
-
+  
   const SkeletonCard = () => (
     <div className="nft__item skeleton">
       <div className="author_list_pp">
