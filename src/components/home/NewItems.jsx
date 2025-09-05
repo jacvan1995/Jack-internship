@@ -20,33 +20,45 @@ const NewItems = () => {
   const [collections, setCollections] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  async function fetchCollections() {
-    try {
-      const { data } = await axios.get(
-        "https://us-central1-nft-cloud-functions.cloudfunctions.net/newItems"
-      );
-      setCollections(data);
-      setLoading(false);
-      console.log("Fetched collections:", data);
-      console.log(loading);
-    } catch (error) {
-      console.error("Failed to fetch collections:", error);
-      setLoading(false);
-    }
-  }
   useEffect(() => {
+    let didCancel = false;
+
+    async function fetchCollections() {
+      try {
+        const { data } = await axios.get(
+          `https://us-central1-nft-cloud-functions.cloudfunctions.net/newItems`
+        );
+        if (!didCancel) {
+          setCollections(data);
+          setLoading(false);
+        }
+      } catch (error) {
+        console.error("Failed to fetch collections:", error);
+        if (!didCancel) setLoading(false);
+      };
+    }
+
     fetchCollections();
+    
+    return () => {
+      didCancel = true;
+    };
   }, []);
-  
+
+  useEffect(() => {
+  console.log("Collections length:", collections.length);
+}, [collections]);
+
+useEffect(() => {
+  console.log("Loading state changed:", loading);
+}, [loading]);
+
   const SkeletonCard = () => (
     <div className="nft__item skeleton">
       <div className="author_list_pp">
         <div className="skeleton-circle pp-author" />
         <i className="fa fa-check skeleton-icon"></i>
       </div>
-
-      <div className="skeleton-countdown" />
-
       <div className="nft__item_wrap">
         <div className="skeleton-box--secondary nft__item_preview" />
       </div>
@@ -64,7 +76,7 @@ const NewItems = () => {
 
   return (
     <section id="section-items" className="no-bottom">
-      <div className="container" data-aos= "fade-up">
+      <div className="container" data-aos="fade-up">
         <div className="row">
           <div className="col-lg-12">
             <div className="text-center">
@@ -123,7 +135,7 @@ const NewItems = () => {
                         </div>
                       </div>
 
-                      <Link to={`/item-details/${collection.authorId}`}>
+                      <Link to={`/item-details/${collection.nftId}`}>
                         <img
                           src={collection.nftImage}
                           className="lazy nft__item_preview"

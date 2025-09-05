@@ -41,7 +41,6 @@ const HotCollections = () => {
     let didFinish = false;
 
     async function fetchCollections() {
-      console.log("Fetching collections...");
       try {
         const { data } = await axios.get(
           "https://us-central1-nft-cloud-functions.cloudfunctions.net/hotCollections"

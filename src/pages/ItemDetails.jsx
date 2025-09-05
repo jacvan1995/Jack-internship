@@ -93,7 +93,7 @@ const ItemDetails = () => {
   </div>
 );
 
-  if (loading || !item) {
+  if (loading) {
     return <Skeleton/>;
   }
   return (

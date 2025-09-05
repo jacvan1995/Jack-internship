@@ -60,7 +60,7 @@ const TopSellers = () => {
                       <div className="author_list_pp">
                         <Link to={`/author/${collection.authorId}`}>
                           <img
-                            className="lazy pp-author"
+                            className="pp-author"
                             src={collection.authorImage}
                             alt=""
                           />
